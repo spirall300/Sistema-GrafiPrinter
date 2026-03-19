@@ -31,6 +31,12 @@
                     </div>
                 @endif
 
+                <div class="mb-6">
+                    <a href="{{ route('admin.users.create') }}"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Registrar Nuevo
+                        Usuario</a>
+                </div>
+
                 <div class="bg-white rounded-3xl shadow-lg p-6 border border-slate-100">
                     <div class="overflow-x-auto">
                         <table class="min-w-full table-auto">

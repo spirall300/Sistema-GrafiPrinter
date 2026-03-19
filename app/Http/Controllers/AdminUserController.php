@@ -34,6 +34,49 @@ class AdminUserController extends Controller
         return view('admin.users.edit', compact('user'));
     }
 
+    // Método para mostrar el formulario de creación de un usuario
+    public function create()
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Acceso denegado');
+        }
+
+        return view('admin.users.create');
+    }
+
+    // Método para guardar un nuevo usuario
+    public function store(Request $request)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Acceso denegado');
+        }
+
+        // Validar los datos del formulario
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:admin,encargado',
+            'security_question' => 'nullable|in:¿Cuál es el nombre de tu primera mascota?,¿Cuál es tu color favorito?,¿Cuál es el nombre de tu madre?,¿En qué ciudad naciste?,¿Cuál es tu comida favorita?',
+            'security_answer' => 'nullable|string|max:255',
+        ]);
+
+        // Crear el usuario
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'security_question' => $request->security_question,
+            'security_answer' => $request->security_answer,
+        ]);
+
+        // Registrar la acción en la bitácora
+        Bitacora::log("Usuario #{$user->id} creado (rol: {$user->role})");
+
+        return redirect()->route('admin.users.index')->with('success', 'Usuario creado correctamente.');
+    }
+
     // Método para actualizar los datos de un usuario
     public function update(Request $request, User $user)
     {
@@ -68,10 +111,20 @@ class AdminUserController extends Controller
             $data['security_answer'] = $request->security_answer;
         }
 
+        // Si se marca desbloquear, resetear intentos y bloqueo
+        if ($request->has('unlock_user')) {
+            $data['login_attempts'] = 0;
+            $data['is_blocked'] = false;
+        }
+
         $user->update($data);
 
         // Registrar la acción en la bitácora
-        Bitacora::log("Usuario #{$user->id} actualizado (rol: {$user->role})");
+        $action = "Usuario #{$user->id} actualizado (rol: {$user->role})";
+        if ($request->has('unlock_user')) {
+            $action .= " - Desbloqueado";
+        }
+        Bitacora::log($action);
 
         return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado correctamente.');
     }
