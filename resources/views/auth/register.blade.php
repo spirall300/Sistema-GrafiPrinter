@@ -3,7 +3,7 @@
         <h2 class="text-blue-400 font-extrabold">
             REGISTRO DE PERSONAL</span>
         </h2>
-        <p class="text-blue-200 text-xs mt-1 font-bold">Complete todos los campos para dar de alta al usuario</p>
+        <p class="text-blue-400 text-xs mt-1 font-bold">Complete todos los campos para nuevo usuario</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-4">
@@ -30,6 +30,7 @@
                 <x-input-label for="password" :value="__('Contraseña')" class="text-blue-950 font-extrabold" />
                 <x-text-input id="password" class="block mt-1 w-full bg-white text-slate-900 border-blue-500"
                     type="password" name="password" required />
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <div>
@@ -37,17 +38,18 @@
                 <x-text-input id="password_confirmation"
                     class="block mt-1 w-full bg-white text-slate-900 border-blue-500" type="password"
                     name="password_confirmation" required />
+                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
         </div>
 
         <hr class="border-blue-800 my-4">
 
         <div>
-            <x-input-label for="role" :value="__('Tipo de Usuario (Rol)')" class="text-blue-950 font-extrabold" />
+            <x-input-label for="role" :value="__('Tipo de Usuario')" class="text-blue-950 font-extrabold" />
             <select id="role" name="role"
                 class="block mt-1 w-full border-blue-500 rounded-md shadow-sm bg-white text-slate-900 focus:ring-blue-500 py-2">
-                <option value="encargado">Encargado (Operaciones básicas)</option>
                 <option value="admin">Administrador (Acceso total)</option>
+                <option value="encargado">Encargado (Operaciones básicas)</option>
             </select>
         </div>
 
@@ -82,7 +84,8 @@
                 {{ __('REGISTRAR NUEVO USUARIO') }}
             </x-primary-button>
 
-            <a class="text-sm text-blue-300 hover:text-white underline transition-colors" href="{{ route('login') }}">
+            <a class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+                href="{{ route('login') }}">
                 {{ __('¿Ya está registrado? Volver al inicio') }}
             </a>
         </div>

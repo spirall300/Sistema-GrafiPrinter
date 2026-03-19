@@ -4,7 +4,7 @@
         <aside class="w-72 bg-slate-900 shadow-2xl flex-shrink-0 border-r border-blue-900/30">
             <div class="p-6">
                 <h1 class="text-xl font-black italic text-white tracking-widest leading-none">
-                    SISTEMA <span class="text-blue-500">TALONARIOS</span>
+                    SISTEMA TALONARIOS</span>
                 </h1>
                 <p class="text-[10px] text-blue-400 font-bold uppercase tracking-tighter mt-2">Panel de Administración
                 </p>

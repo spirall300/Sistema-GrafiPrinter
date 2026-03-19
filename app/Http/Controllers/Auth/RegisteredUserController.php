@@ -30,12 +30,12 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
 {
     $request->validate([
-        'name' => ['required', 'string', 'max:255'],
+        'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-        'password' => ['required', 'confirmed', 'min:16', Rules\Password::defaults()],
-        'role' => ['required', 'string'], // Nuevo campo
-        'security_question' => ['required', 'integer'], // Nuevo campo
-        'security_answer' => ['required', 'string', 'max:255'], // Nuevo campo
+        'password' => ['required', 'confirmed', Rules\Password::min(16)->letters()->symbols()],
+        'role' => ['required', 'string'],
+        'security_question' => ['required', 'integer'],
+        'security_answer' => ['required', 'string', 'max:255'],
     ]);
 
     $user = User::create([
@@ -50,6 +50,8 @@ class RegisteredUserController extends Controller
     event(new Registered($user));
     Auth::login($user);
 
-    return redirect(route('dashboard', absolute: false));
+    session()->flash('status', '¡Registro exitoso! Ahora puedes iniciar sesión.');
+
+    return redirect(route('login', absolute: false));
 }
 }

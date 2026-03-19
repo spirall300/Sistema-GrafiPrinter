@@ -23,15 +23,6 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox"
-                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Recordar Sesion') }}</span>
-            </label>
-        </div>
-
         <div class="mt-4 text-center">
             @if (Route::has('password.request'))
                 <a class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors"
@@ -42,7 +33,8 @@
         </div>
 
         <div class="mt-4 text-center">
-            <a href="{{ route('register') }}" class="text-sm text-blue-800 hover:text-white underline font-medium">
+            <a href="{{ route('register') }}"
+                class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors underline">
                 {{ __('¿No tienes cuenta? Regístrate aquí') }}
             </a>
         </div>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
-
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $user = \App\Models\User::where('email', $this->email)->first();
+        $user = User::where('email', $this->email)->first();
 
     // Verificar si ya está bloqueado antes de intentar
     if ($user && $user->is_blocked) {
@@ -63,7 +63,6 @@ class LoginRequest extends FormRequest
             }
         }
 
-        RateLimiter::hit($this->throttleKey());
         throw ValidationException::withMessages(['email' => trans('auth.failed')]);
     }
 
@@ -76,14 +75,6 @@ class LoginRequest extends FormRequest
         'ip_address' => $this->ip(),
         'user_agent' => $this->userAgent(),
     ]);
-
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
 
         RateLimiter::clear($this->throttleKey());
     }

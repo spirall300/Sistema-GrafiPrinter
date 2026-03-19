@@ -17,4 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/bitacora', [BitacoraController::class, 'index'])
+    ->middleware(['auth', 'role:admin']); // Solo el admin entra aquí
+
 require __DIR__.'/auth.php';
