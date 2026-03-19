@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Bitacora;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,8 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        Bitacora::log('Perfil actualizado');
+
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
@@ -51,6 +54,8 @@ class ProfileController extends Controller
         Auth::logout();
 
         $user->delete();
+
+        Bitacora::log('Cuenta eliminada');
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
