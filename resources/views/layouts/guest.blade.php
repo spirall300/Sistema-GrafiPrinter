@@ -20,9 +20,10 @@
     <div
         class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
 
-        <div class="mb-8 text-center">
-            <h1 class="text-4xl font-extrabold text-white tracking-widest uppercase italic">
-                GRAFI-PRINTER 360 C.A
+        <div class="mb-6 text-center">
+            <img src="/logo.png" alt="GrafiPrinter Logo" class="w-16 h-16 mx-auto mb-4 rounded-full shadow-lg">
+            <h1 class="text-3xl font-extrabold text-white tracking-widest uppercase italic">
+                GRAFIPRINTER 360 C.A
             </h1>
             <p class="text-white text-sm mt-2">Sistema de Gestion e Inventario</p>
         </div>

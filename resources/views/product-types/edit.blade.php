@@ -49,4 +49,9 @@
             </div>
         </main>
     </div>
+
+    <script>
+        // Oculta la URL cambiando a la raíz
+        window.history.replaceState(null, null, '/');
+    </script>
 </x-app-layout>
