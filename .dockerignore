@@ -1,0 +1,17 @@
+node_modules
+vendor
+.env
+.env.local
+.git
+.gitignore
+npm-debug.log
+phpunit.xml
+phpunit.result.cache
+README.md
+docker-compose*.yml
+tests
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+public/storage
