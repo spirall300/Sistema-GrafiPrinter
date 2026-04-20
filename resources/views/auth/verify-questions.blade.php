@@ -20,4 +20,9 @@
             VERIFICAR Y CONTINUAR
         </x-primary-button>
     </form>
+
+    <script>
+        // Oculta la URL de la Página de Preguntas de Seguridad
+        window.history.replaceState(null, null, '/');
+    </script>
 </x-guest-layout>

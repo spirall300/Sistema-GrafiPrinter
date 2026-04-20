@@ -118,8 +118,8 @@
                                                         class="text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-xl px-3 py-1 text-center">
                                                         Editar
                                                     </a>
-                                                    <form action="{{ route('orders.update', $order) }}" method="POST"
-                                                        class="flex items-center gap-2">
+                                                    <form action="{{ route('orders.update-status', $order) }}"
+                                                        method="POST" class="flex items-center gap-2">
                                                         @csrf
                                                         @method('PATCH')
                                                         <select name="status" required

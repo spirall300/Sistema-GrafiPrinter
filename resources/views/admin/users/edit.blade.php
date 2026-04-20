@@ -53,6 +53,16 @@
                     </div>
 
                     <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-slate-700 mb-2">Nueva Contraseña
+                        </label>
+                        <input type="password" name="password" id="password"
+                            class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-6">
                         <label for="password_confirmation"
                             class="block text-sm font-medium text-slate-700 mb-2">Confirmar Nueva Contraseña</label>
                         <input type="password" name="password_confirmation" id="password_confirmation"
@@ -65,21 +75,18 @@
                         <select name="security_question" id="security_question"
                             class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Seleccionar pregunta</option>
-                            <option value="¿Cuál es el nombre de tu primera mascota?"
-                                {{ $user->security_question == '¿Cuál es el nombre de tu primera mascota?' ? 'selected' : '' }}>
-                                ¿Cuál es el nombre de tu primera mascota?</option>
-                            <option value="¿Cuál es tu color favorito?"
-                                {{ $user->security_question == '¿Cuál es tu color favorito?' ? 'selected' : '' }}>¿Cuál
-                                es tu color favorito?</option>
-                            <option value="¿Cuál es el nombre de tu madre?"
-                                {{ $user->security_question == '¿Cuál es el nombre de tu madre?' ? 'selected' : '' }}>
-                                ¿Cuál es el nombre de tu madre?</option>
-                            <option value="¿En qué ciudad naciste?"
-                                {{ $user->security_question == '¿En qué ciudad naciste?' ? 'selected' : '' }}>¿En qué
-                                ciudad naciste?</option>
-                            <option value="¿Cuál es tu comida favorita?"
-                                {{ $user->security_question == '¿Cuál es tu comida favorita?' ? 'selected' : '' }}>
-                                ¿Cuál es tu comida favorita?</option>
+                            <option value="1" {{ $user->security_question == '1' ? 'selected' : '' }}>¿Cuál es su
+                                color favorito?</option>
+                            <option value="2" {{ $user->security_question == '2' ? 'selected' : '' }}>¿Cuál es su
+                                comida favorita?</option>
+                            <option value="3" {{ $user->security_question == '3' ? 'selected' : '' }}>¿Cuál es su
+                                pasatiempo favorito?</option>
+                            <option value="4" {{ $user->security_question == '4' ? 'selected' : '' }}>¿Cuál es su
+                                deporte favorito?</option>
+                            <option value="5" {{ $user->security_question == '5' ? 'selected' : '' }}>¿Cuál es su
+                                fruta favorita?</option>
+                            <option value="6" {{ $user->security_question == '6' ? 'selected' : '' }}>¿Cuál es su
+                                música favorita?</option>
                         </select>
                         @error('security_question')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

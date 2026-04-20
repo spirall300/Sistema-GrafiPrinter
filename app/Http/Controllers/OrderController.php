@@ -48,7 +48,7 @@ class OrderController extends Controller
         // Registrar en bitácora
         Bitacora::log("Pedido #{$order->id} creado (tipo: {$order->type}, qty: {$order->quantity})");
 
-        return redirect()->route('orders.create')
+        return redirect()->route('orders.index')
             ->with('status', 'Pedido registrado correctamente.');
     }
 
@@ -127,5 +127,25 @@ class OrderController extends Controller
         Bitacora::log("Pedido #{$order->id} actualizado: estado {$order->status}");
 
         return back()->with('status', 'Estado del pedido actualizado.');
+    }
+
+    // Método para actualizar solo el estatus de un pedido (desde la lista)
+    public function updateStatus(Request $request, Order $order)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403);
+        }
+
+        $request->validate([
+            'status' => ['required', 'string', 'in:Pendiente,Revisado,Pagado'],
+        ]);
+
+        $oldStatus = $order->status;
+        $order->update(['status' => $request->status]);
+
+        // Registrar en bitácora
+        Bitacora::log("Pedido #{$order->id} estatus cambiado: {$oldStatus} → {$order->status}");
+
+        return back()->with('status', 'Estado del pedido actualizado correctamente.');
     }
 }

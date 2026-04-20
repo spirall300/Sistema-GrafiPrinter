@@ -57,7 +57,7 @@ class AdminUserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'required|in:admin,encargado',
-            'security_question' => 'nullable|in:¿Cuál es el nombre de tu primera mascota?,¿Cuál es tu color favorito?,¿Cuál es el nombre de tu madre?,¿En qué ciudad naciste?,¿Cuál es tu comida favorita?',
+            'security_question' => 'nullable|integer|min:1|max:6',
             'security_answer' => 'nullable|string|max:255',
         ]);
 
@@ -88,7 +88,7 @@ class AdminUserController extends Controller
         $request->validate([
             'role' => 'required|in:admin,encargado',
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'security_question' => 'nullable|in:¿Cuál es el nombre de tu primera mascota?,¿Cuál es tu color favorito?,¿Cuál es el nombre de tu madre?,¿En qué ciudad naciste?,¿Cuál es tu comida favorita?',
+            'security_question' => 'nullable|integer|min:1|max:6',
             'security_answer' => 'nullable|string|max:255',
         ]);
 

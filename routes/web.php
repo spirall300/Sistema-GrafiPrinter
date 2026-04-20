@@ -11,12 +11,14 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $orders = Order::where('user_id', Auth::id())
-        ->orderBy('delivery_date')
-        ->take(5)
-        ->get();
+    $user = Auth::user();
 
-    $upcomingDeliveries = Order::where('user_id', Auth::id())
+    // Si es admin, mostrar todos los pedidos; si no, solo los suyos
+    $ordersQuery = $user->role === 'admin' ? Order::query() : Order::where('user_id', $user->id);
+    $upcomingDeliveriesQuery = $user->role === 'admin' ? Order::query() : Order::where('user_id', $user->id);
+
+    $orders = $ordersQuery->orderBy('delivery_date')->take(5)->get();
+    $upcomingDeliveries = $upcomingDeliveriesQuery
         ->whereDate('delivery_date', '>=', now()->toDateString())
         ->orderBy('delivery_date')
         ->take(5)
@@ -31,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::patch('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
 
     Route::get('/product-types', [App\Http\Controllers\ProductTypeController::class, 'index'])->name('product-types.index');
     Route::get('/product-types/{productType}/edit', [App\Http\Controllers\ProductTypeController::class, 'edit'])->name('product-types.edit');

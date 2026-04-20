@@ -98,21 +98,18 @@
                         <select name="security_question" id="security_question"
                             class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Seleccionar pregunta</option>
-                            <option value="¿Cuál es el nombre de tu primera mascota?"
-                                {{ old('security_question') == '¿Cuál es el nombre de tu primera mascota?' ? 'selected' : '' }}>
-                                ¿Cuál es el nombre de tu primera mascota?</option>
-                            <option value="¿Cuál es tu color favorito?"
-                                {{ old('security_question') == '¿Cuál es tu color favorito?' ? 'selected' : '' }}>¿Cuál
-                                es tu color favorito?</option>
-                            <option value="¿Cuál es el nombre de tu madre?"
-                                {{ old('security_question') == '¿Cuál es el nombre de tu madre?' ? 'selected' : '' }}>
-                                ¿Cuál es el nombre de tu madre?</option>
-                            <option value="¿En qué ciudad naciste?"
-                                {{ old('security_question') == '¿En qué ciudad naciste?' ? 'selected' : '' }}>¿En qué
-                                ciudad naciste?</option>
-                            <option value="¿Cuál es tu comida favorita?"
-                                {{ old('security_question') == '¿Cuál es tu comida favorita?' ? 'selected' : '' }}>
-                                ¿Cuál es tu comida favorita?</option>
+                            <option value="1" {{ old('security_question') == '1' ? 'selected' : '' }}>¿Cuál es su
+                                color favorito?</option>
+                            <option value="2" {{ old('security_question') == '2' ? 'selected' : '' }}>¿Cuál es su
+                                comida favorita?</option>
+                            <option value="3" {{ old('security_question') == '3' ? 'selected' : '' }}>¿Cuál es su
+                                pasatiempo favorito?</option>
+                            <option value="4" {{ old('security_question') == '4' ? 'selected' : '' }}>¿Cuál es su
+                                deporte favorito?</option>
+                            <option value="5" {{ old('security_question') == '5' ? 'selected' : '' }}>¿Cuál es su
+                                fruta favorita?</option>
+                            <option value="6" {{ old('security_question') == '6' ? 'selected' : '' }}>¿Cuál es su
+                                música favorita?</option>
                         </select>
                         @error('security_question')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

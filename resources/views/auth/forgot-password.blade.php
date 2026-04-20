@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-blue-200">
+    <div class="mb-4 text-sm text-blue-600">
         {{ __('¿Olvidaste tu contraseña? Ingresa tu correo y elige cómo deseas recuperarla.') }}
     </div>
 
@@ -18,7 +18,7 @@
             </x-primary-button>
 
             <button type="button" onclick="goToQuestions()"
-                class="w-full py-2 bg-slate-800 text-blue-300 border border-blue-500 rounded-md font-bold hover:bg-slate-700 transition">
+                class="w-full py-2 bg-slate-800 text-white border border-blue-500 rounded-md font-bold hover:bg-slate-700 transition">
                 USAR PREGUNTA DE SEGURIDAD
             </button>
         </div>
@@ -34,5 +34,8 @@
                 alert('Por favor, escribe tu correo primero.');
             }
         }
+
+        // Oculta la URL de la Página de Restablecimiento de Contraseña
+        window.history.replaceState(null, null, '/');
     </script>
 </x-guest-layout>
