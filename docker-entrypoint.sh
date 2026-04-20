@@ -16,14 +16,8 @@ if [ "${MIGRATE_ON_START:-false}" = "true" ]; then
   echo "[Render] Migrations completed."
 fi
 
-# Configure Apache for Laravel and Render
-echo "[Render] Configuring Apache..."
-
-# Change DocumentRoot to public directory
-sed -i '\''s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|'\'' /etc/apache2/sites-available/000-default.conf
-
-# Update Directory directive to point to public
-sed -i '\''s|<Directory /var/www/html>|<Directory /var/www/html/public>|'\'' /etc/apache2/sites-available/000-default.conf
+# Configure Apache for Render
+echo "[Render] Configuring Apache port..."
 
 # Change port to PORT environment variable if set
 if [ -n "$PORT" ]; then
@@ -31,6 +25,6 @@ if [ -n "$PORT" ]; then
   sed -i "s/Listen 80/Listen $PORT/g" /etc/apache2/ports.conf
 fi
 
-echo "[Render] Apache configuration updated."
+echo "[Render] Apache port configured."
 
 exec apache2-foreground

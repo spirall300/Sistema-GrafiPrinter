@@ -10,12 +10,15 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && docker-php-ext-install pdo pdo_pgsql zip gd intl
 
 # Habilita mod_rewrite para Laravel
 RUN a2enmod rewrite
+
+# Configura Apache para Laravel
+RUN echo '<VirtualHost *:80>\n\tServerAdmin webmaster@localhost\n\tDocumentRoot /var/www/html/public\n\t<Directory /var/www/html/public>\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>\n</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 # Copia el código de la app
 COPY . /var/www/html
