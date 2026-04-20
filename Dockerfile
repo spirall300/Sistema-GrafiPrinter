@@ -23,16 +23,16 @@ RUN echo '<VirtualHost *:80>\n\tServerAdmin webmaster@localhost\n\tDocumentRoot 
 # Copia el código de la app
 COPY . /var/www/html
 
+# Instala Composer y dependencias
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
+
 # Crea enlace simbólico para storage
 RUN php artisan storage:link
 
 # Cambia permisos
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
-
-# Instala Composer y dependencias
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader
 
 # Construye assets (Vite/Tailwind)
 RUN npm install && npm run build
