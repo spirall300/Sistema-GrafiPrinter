@@ -1,9 +1,39 @@
 <x-app-layout>
     <div class="flex min-h-screen bg-slate-200">
-        <x-sidebar />
+        <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-slate-200 relative">
+            <!-- Botón menú solo en móvil -->
+            <button @click="sidebarOpen = true"
+                class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-9 h-9">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
+                        stroke="#fff" />
+                </svg>
+            </button>
+            <!-- Sidebar modal en móvil -->
+            <template x-if="sidebarOpen">
+                <div class="fixed inset-0 z-50 flex items-center justify-center">
+                    <div @click="sidebarOpen = false" class="absolute inset-0 bg-slate-900/40"></div>
+                    <div
+                        class="relative w-11/12 max-w-sm bg-slate-900 shadow-2xl rounded-2xl border-2 border-blue-900/30 flex flex-col animate-fade-in mx-auto">
+                        <button @click="sidebarOpen = false"
+                            class="absolute top-4 right-4 text-white text-2xl p-2 rounded-full hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="w-7 h-7">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        @include('components.sidebar-modal')
+                    </div>
+                </div>
+            </template>
+            <x-sidebar />
+            <!-- ...existing code... -->
+        </div>
 
         <main class="flex-1 p-10 overflow-y-auto">
-            <div class="max-w-6xl mx-auto">
+            <div class="max-w-4xl mx-auto">
                 <div
                     class="bg-white rounded-3xl p-8 shadow-xl border-b-8 border-blue-600 mb-10 flex justify-between items-center relative overflow-hidden">
                     <div class="relative z-10">

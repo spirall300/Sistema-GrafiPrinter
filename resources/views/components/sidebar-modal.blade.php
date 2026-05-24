@@ -1,0 +1,66 @@
+<!-- Sidebar modal para móvil, mismo contenido que el sidebar normal pero sin hidden/md:block -->
+<div class="p-6">
+    <img src="{{ asset('logo.png') }}" alt="GrafiPrinter Logo" class="w-16 h-16 mx-auto mb-2 rounded-full shadow-lg">
+    <h1 class="text-xl font-black italic text-white tracking-widest leading-none text-center">
+        SISTEMA GRAFIPRINTER
+    </h1>
+    <p class="text-sm text-blue-400 font-black uppercase tracking-tighter mt-1 text-center">Menú Principal</p>
+</div>
+<nav class="mt-4 px-4 space-y-3">
+    <div>
+        <button
+            class="flex items-center justify-between w-full p-4 text-sm font-black text-white bg-blue-600 rounded-xl transition-all duration-300 group shadow-lg">
+            <div class="flex items-center gap-3">
+                <span class="text-lg group-hover:scale-110 transition">📦</span>
+                <span class="tracking-tight">GESTIÓN PEDIDOS</span>
+            </div>
+        </button>
+        <div class="mt-2 ml-6 space-y-2 border-l-2 border-blue-500 bg-slate-800/30 rounded-r-lg py-2">
+            <a href="{{ route('orders.create') }}"
+                class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 transition hover:translate-x-1">
+                • Crear Nuevo Pedido
+            </a>
+            <a href="{{ route('orders.index') }}"
+                class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 transition hover:translate-x-1">
+                • Ver Seguimiento
+            </a>
+            @if (Auth::user()->role == 'admin')
+                <a href="{{ route('product-types.index') }}"
+                    class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 transition hover:translate-x-1">
+                    • Añadir Tipo de Producto
+                </a>
+            @endif
+        </div>
+    </div>
+    @if (in_array(Auth::user()->role, ['admin', 'encargado']))
+        <div class="pt-6">
+            <p class="px-4 text-[10px] font-black text-blue-500 uppercase mb-2 tracking-widest">
+                Configuración Avanzada</p>
+            <div>
+                <button
+                    class="flex items-center justify-between w-full p-4 text-sm font-black text-white bg-blue-600 rounded-xl transition-all duration-300 group shadow-lg">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg group-hover:scale-110 transition">⚙️</span>
+                        <span class="tracking-tight">ADMINISTRACIÓN</span>
+                    </div>
+                </button>
+                <div class="mt-2 ml-6 space-y-2 border-l-2 border-blue-500 bg-slate-800/30 rounded-r-lg py-2">
+                    <a href="{{ route('inventory.index') }}"
+                        class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">
+                        • Inventario
+                    </a>
+                    @if (Auth::user()->role == 'admin')
+                        <a href="{{ route('bitacoras.index') }}"
+                            class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">
+                            • Bitácora
+                        </a>
+                        <a href="{{ route('admin.users.index') }}"
+                            class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">
+                            • Gestionar Usuarios
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
+</nav>

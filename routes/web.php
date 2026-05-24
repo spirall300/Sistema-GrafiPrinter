@@ -3,6 +3,7 @@
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Order;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,16 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
+    $monthParam = request('month');
+    $calendarDate = now();
+
+    if ($monthParam) {
+        try {
+            $calendarDate = Carbon::createFromFormat('Y-m', $monthParam)->startOfMonth();
+        } catch (\Exception $e) {
+            $calendarDate = now();
+        }
+    }
 
     // Si es admin, mostrar todos los pedidos; si no, solo los suyos
     $ordersQuery = $user->role === 'admin' ? Order::query() : Order::where('user_id', $user->id);
@@ -19,12 +30,21 @@ Route::get('/dashboard', function () {
 
     $orders = $ordersQuery->orderBy('delivery_date')->take(5)->get();
     $upcomingDeliveries = $upcomingDeliveriesQuery
-        ->whereDate('delivery_date', '>=', now()->toDateString())
+        ->whereMonth('delivery_date', $calendarDate->month)
+        ->whereYear('delivery_date', $calendarDate->year)
         ->orderBy('delivery_date')
-        ->take(5)
+        ->select(['id', 'type', 'company_name', 'status', 'delivery_date'])
         ->get();
 
-    return view('dashboard', compact('orders', 'upcomingDeliveries'));
+    // Pedidos próximos a entregar (próximos 3 días)
+    $soonDeliveries = $upcomingDeliveriesQuery
+        ->whereDate('delivery_date', '>=', now()->toDateString())
+        ->whereDate('delivery_date', '<=', now()->addDays(3)->toDateString())
+        ->orderBy('delivery_date')
+        ->select(['id', 'type', 'company_name', 'status', 'delivery_date'])
+        ->get();
+
+    return view('dashboard', compact('orders', 'upcomingDeliveries', 'calendarDate', 'soonDeliveries'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

@@ -1,6 +1,29 @@
 <x-app-layout>
     <div class="flex min-h-screen bg-slate-200">
-        <x-sidebar />
+        <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-slate-200 relative">
+            <!-- Botón menú solo en móvil -->
+            <button @click="sidebarOpen = true"
+                class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-9 h-9">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
+                        stroke="#fff" />
+                </svg>
+            </button>
+            <!-- Sidebar modal en móvil -->
+            <template x-if="sidebarOpen">
+                <div class="fixed inset-0 z-50 flex items-center justify-center">
+                    <div @click="sidebarOpen = false" class="absolute inset-0 bg-slate-900/40"></div>
+                    <div
+                        class="relative w-11/12 max-w-sm bg-slate-900 shadow-2xl rounded-2xl border-2 border-blue-900/30 flex flex-col animate-fade-in mx-auto">
+                        <!-- Botón de cerrar (X) eliminado por requerimiento -->
+                        @include('components.sidebar-modal')
+                    </div>
+                </div>
+            </template>
+            <x-sidebar />
+            <!-- ...existing code... -->
+        </div>
 
         <main class="flex-1 p-10 overflow-y-auto">
             <div class="max-w-4xl mx-auto">
@@ -20,10 +43,18 @@
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
                 </div>
 
+                {{-- Formulario de edición de usuario con confirmación antes de actualizar --}}
                 <form method="POST" action="{{ route('admin.users.update', $user) }}"
-                    class="bg-white rounded-3xl shadow-lg p-8 border border-slate-100">
+                    class="bg-white rounded-3xl shadow-lg p-8 border border-slate-100"
+                    onsubmit="return confirm('¿Estás seguro de los cambios realizados en este usuario?');">
                     @csrf
                     @method('PATCH')
+
+                    <div class="mb-6 p-4 rounded-2xl bg-blue-50 border border-blue-100 text-slate-700">
+                        <p class="text-sm font-bold">Antes de actualizar, revisa bien los cambios.</p>
+                        <p class="text-xs text-slate-500">Una vez guardados, los datos del usuario se actualizarán
+                            inmediatamente.</p>
+                    </div>
 
                     @if (session('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">

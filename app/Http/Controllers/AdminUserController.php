@@ -130,10 +130,18 @@ class AdminUserController extends Controller
     }
 
     // Método para eliminar un usuario
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Acceso denegado');
+        }
+
+        $request->validate([
+            'confirm_password' => 'required|string',
+        ]);
+
+        if (!Hash::check($request->confirm_password, Auth::user()->password)) {
+            return redirect()->route('admin.users.index')->with('error', 'Contraseña incorrecta. No se eliminó el usuario.');
         }
 
         // Verificar que no se elimine así mismo o el último administrador
