@@ -23,9 +23,9 @@
         <div class="mb-6 text-center">
             <img src="/logo.png" alt="GrafiPrinter Logo" class="w-16 h-16 mx-auto mb-4 rounded-full shadow-lg">
             <h1 class="text-3xl font-extrabold text-white tracking-widest uppercase italic">
-                GRAFIPRINTER 360 C.A
+                GRAFIPRINTER 360
             </h1>
-            <p class="text-white text-sm mt-2">Sistema de Gestion e Inventario</p>
+            <p class="text-white text-sm mt-2">Sistema de Gestion de Pedidos</p>
         </div>
 
         <div
@@ -34,7 +34,7 @@
         </div>
 
         <footer class="mt-8 text-white text-xs">
-            &copy; {{ date('Y') }} - Universidad Politécnica Territorial de Falcón Alonso Gamero
+            &copy; {{ date('Y') }} - Universidad Politécnica Territorial Alonso Gamero
         </footer>
     </div>
 </body>

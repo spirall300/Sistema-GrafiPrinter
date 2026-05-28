@@ -45,10 +45,10 @@
                     </div>
                 </button>
                 <div class="mt-2 ml-6 space-y-2 border-l-2 border-blue-500 bg-slate-800/30 rounded-r-lg py-2">
-                    <a href="{{ route('inventory.index') }}"
+                    {{-- <a href="{{ route('inventory.index') }}"
                         class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">
                         • Inventario
-                    </a>
+                    </a> --}}
                     @if (Auth::user()->role == 'admin')
                         <a href="{{ route('bitacoras.index') }}"
                             class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">

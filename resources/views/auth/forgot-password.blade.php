@@ -13,9 +13,11 @@
         </div>
 
         <div class="flex flex-col gap-3 mt-6">
-            <x-primary-button class="w-full justify-center bg-blue-700">
-                {{ __('ENVIAR ENLACE AL CORREO') }}
-            </x-primary-button>
+
+            <button type="submit"
+                class="w-full py-2 bg-slate-800 text-white border border-blue-500 rounded-md font-bold hover:bg-slate-700 transition">
+                ENVIAR ENLACE AL CORREO
+            </button>
 
             <button type="button" onclick="goToQuestions()"
                 class="w-full py-2 bg-slate-800 text-white border border-blue-500 rounded-md font-bold hover:bg-slate-700 transition">
@@ -23,6 +25,14 @@
             </button>
         </div>
     </form>
+
+
+    <div class="flex flex-col items-center gap-4 mt-6">
+        <a class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+            href="{{ route('login') }}">
+            {{ __('Volver al inicio') }}
+        </a>
+    </div>
 
     <script>
         function goToQuestions() {

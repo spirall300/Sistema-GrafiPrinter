@@ -1,4 +1,10 @@
+
 <?php
+// AJAX: Marcar soonDeliveriesDismissed en la sesión
+Route::post('/dashboard/soon-deliveries-dismiss', function () {
+    session(['soonDeliveriesDismissed' => true]);
+    return response()->json(['ok' => true]);
+})->middleware(['auth']);
 
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -54,6 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::patch('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     Route::get('/product-types', [App\Http\Controllers\ProductTypeController::class, 'index'])->name('product-types.index');
     Route::get('/product-types/{productType}/edit', [App\Http\Controllers\ProductTypeController::class, 'edit'])->name('product-types.edit');

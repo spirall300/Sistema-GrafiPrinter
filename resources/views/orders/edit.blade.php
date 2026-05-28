@@ -137,9 +137,44 @@
                             class="text-sm font-semibold text-slate-600 hover:text-blue-600">
                             Cancelar
                         </a>
-                        <x-primary-button class="bg-blue-700 hover:bg-blue-800 py-3 px-8">
+                        <button type="button" id="confirm-edit-btn"
+                            class="bg-slate-900 hover:bg-blue-900 py-3 px-8 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
                             Guardar Cambios
-                        </x-primary-button>
+                        </button>
+                    </div>
+                    <!-- Modal de confirmación -->
+                    <div id="modal-confirm-edit"
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+                        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xs w-full flex flex-col items-center">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2">¿Confirmar edición?</h3>
+                            <p class="text-slate-600 text-sm mb-6 text-center">¿Deseas guardar los cambios realizados
+                                en el pedido?</p>
+                            <div class="flex gap-4 w-full justify-center">
+                                <button id="cancel-modal-btn"
+                                    class="px-4 py-2 rounded-lg bg-slate-300 hover:bg-slate-400 text-slate-800 font-semibold flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Cancelar
+                                </button>
+                                <button id="accept-modal-btn"
+                                    class="px-4 py-2 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-bold flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Confirmar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
 
@@ -148,14 +183,28 @@
                         const form = document.getElementById('order-form');
                         const fileInput = document.getElementById('file');
                         const maxFileSize = 10 * 1024 * 1024; // 10MB
+                        const confirmBtn = document.getElementById('confirm-edit-btn');
+                        const modal = document.getElementById('modal-confirm-edit');
+                        const cancelModalBtn = document.getElementById('cancel-modal-btn');
+                        const acceptModalBtn = document.getElementById('accept-modal-btn');
 
-                        if (!form || !fileInput) {
+                        if (!form || !fileInput || !confirmBtn || !modal) {
                             return;
                         }
 
+                        confirmBtn.addEventListener('click', function() {
+                            modal.classList.remove('hidden');
+                        });
+                        cancelModalBtn.addEventListener('click', function() {
+                            modal.classList.add('hidden');
+                        });
+                        acceptModalBtn.addEventListener('click', function() {
+                            modal.classList.add('hidden');
+                            form.submit();
+                        });
+
                         form.addEventListener('submit', function(event) {
                             const file = fileInput.files[0];
-
                             if (file && file.size > maxFileSize) {
                                 event.preventDefault();
                                 alert('El archivo es demasiado grande. El tamaño máximo permitido es 10MB.');

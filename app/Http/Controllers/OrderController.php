@@ -12,6 +12,23 @@ use Illuminate\Support\Facades\Storage;
 // Controlador para la gestión de pedidos
 class OrderController extends Controller
 {
+    // Método para eliminar un pedido (solo admin)
+    public function destroy(Order $order)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403);
+        }
+        // Eliminar archivo asociado si existe
+        if ($order->file_path && Storage::disk('public')->exists($order->file_path)) {
+            Storage::disk('public')->delete($order->file_path);
+        }
+        $orderId = $order->id;
+        $order->delete();
+        // Registrar en bitácora
+        Bitacora::log("Pedido #{$orderId} eliminado");
+        return redirect()->route('orders.index')->with('status', 'Pedido eliminado correctamente.');
+    }
+
     // Método para mostrar el formulario de creación de un nuevo pedido
     public function create()
     {
@@ -126,7 +143,7 @@ class OrderController extends Controller
         // Registrar en bitácora
         Bitacora::log("Pedido #{$order->id} actualizado: estado {$order->status}");
 
-        return back()->with('status', 'Estado del pedido actualizado.');
+        return redirect()->route('orders.index')->with('status', 'Pedido actualizado correctamente.');
     }
 
     // Método para actualizar solo el estatus de un pedido (desde la lista)
@@ -146,6 +163,13 @@ class OrderController extends Controller
         // Registrar en bitácora
         Bitacora::log("Pedido #{$order->id} estatus cambiado: {$oldStatus} → {$order->status}");
 
-        return back()->with('status', 'Estado del pedido actualizado correctamente.');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'status' => $order->status,
+                'message' => 'Estado del pedido actualizado correctamente.'
+            ]);
+        }
+        return redirect()->route('orders.index')->with('status', 'Estado del pedido actualizado correctamente.');
     }
 }

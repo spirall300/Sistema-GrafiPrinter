@@ -21,6 +21,14 @@
         </x-primary-button>
     </form>
 
+
+    <div class="flex flex-col items-center gap-4 mt-6">
+        <a class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+            href="{{ route('login') }}">
+            {{ __('Volver al inicio') }}
+        </a>
+    </div>
+
     <script>
         // Oculta la URL de la Página de Preguntas de Seguridad
         window.history.replaceState(null, null, '/');

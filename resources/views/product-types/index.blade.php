@@ -5,7 +5,7 @@
             <button @click="sidebarOpen = true"
                 class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-9 h-9">
+                    class="w-7 h-7">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
                         stroke="#fff" />
                 </svg>
@@ -42,6 +42,13 @@
                         </h2>
                         <p class="text-slate-500 font-medium mt-1 uppercase text-sm">Agrega y administra las opciones
                             para el pedido</p>
+                    </div>
+                    <div class="text-right z-10 hidden md:block">
+                        <p
+                            class="text-4xl font-black uppercase tracking-tighter {{ Auth::user()->role === 'admin' ? 'text-slate-700' : 'text-slate-700' }}">
+                            {{ Auth::user()->role === 'admin' ? 'ADMIN' : 'PUBLIC' }}
+                        </p>
+                        <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
                 </div>
