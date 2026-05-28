@@ -34,6 +34,11 @@
 
         <main class="flex-1 p-10 overflow-y-auto">
             <div class="max-w-4xl mx-auto">
+                @if (session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div
                     class="bg-white rounded-3xl p-8 shadow-xl border-b-8 border-blue-600 mb-10 flex justify-between items-center relative overflow-hidden">
                     <div class="relative z-10">
@@ -84,7 +89,7 @@
 
                     <div class="bg-white rounded-3xl shadow-lg p-6 border border-slate-100">
                         <h3 class="text-lg font-bold text-slate-800 mb-4">Tipos existentes</h3>
-                        <div class="overflow-x-auto">
+                        <div x-data="{ openDeleteModal: null }" class="overflow-x-auto">
                             <table class="min-w-full table-auto">
                                 <thead>
                                     <tr class="bg-slate-50">
@@ -104,14 +109,30 @@
                                             <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
                                                 <a href="{{ route('product-types.edit', $type) }}"
                                                     class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
-                                                <form method="POST"
-                                                    action="{{ route('product-types.destroy', $type) }}" class="inline"
-                                                    onsubmit="return confirm('¿Eliminar este tipo de producto?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="text-red-600 hover:text-red-900">Eliminar</button>
-                                                </form>
+                                                <button type="button" @click="openDeleteModal = {{ $type->id }}"
+                                                    class="text-red-600 hover:text-red-900">Eliminar</button>
+                                                <!-- Modal de confirmación -->
+                                                <div x-show="openDeleteModal === {{ $type->id }}" x-cloak
+                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                                                    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full flex flex-col items-center"
+                                                        @click.away="openDeleteModal = null">
+                                                        <h2 class="text-lg font-bold text-slate-800 mb-2">¿Eliminar tipo
+                                                            de producto?</h2>
+                                                        <p class="text-slate-600 mb-6 text-sm">Esta acción no se puede
+                                                            deshacer.</p>
+                                                        <form method="POST"
+                                                            action="{{ route('product-types.destroy', $type) }}"
+                                                            class="w-full flex flex-col items-center gap-3">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold w-full">Sí,
+                                                                eliminar</button>
+                                                            <button type="button" @click="openDeleteModal = null"
+                                                                class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-xl font-semibold w-full">Cancelar</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty

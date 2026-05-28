@@ -20,7 +20,7 @@ class AdminUserController extends Controller
             abort(403, 'Acceso denegado');
         }
 
-        $users = User::all();
+        $users = User::paginate(20);
         return view('admin.users.index', compact('users'));
     }
 
@@ -55,7 +55,7 @@ class AdminUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::min(16)->letters()->numbers()->symbols()],
             'role' => 'required|in:admin,encargado',
             'security_question' => 'nullable|integer|min:1|max:6',
             'security_answer' => 'nullable|string|max:255',
@@ -87,14 +87,14 @@ class AdminUserController extends Controller
         // Validar los datos del formulario
         $request->validate([
             'role' => 'required|in:admin,encargado',
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'password' => ['nullable', 'confirmed', Rules\Password::min(16)->letters()->numbers()->symbols()],
             'security_question' => 'nullable|integer|min:1|max:6',
             'security_answer' => 'nullable|string|max:255',
         ]);
 
         // Verificar que no se elimine el último administrador
         $admins = User::where('role', 'admin')->count();
-        if ($request->role === 'user' && $user->role === 'admin' && $admins <= 1) {
+        if ($request->role !== 'admin' && $user->role === 'admin' && $admins <= 1) {
             return redirect()->back()->with('error', 'No puedes cambiar el rol del último administrador.');
         }
 

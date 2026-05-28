@@ -77,6 +77,12 @@ class ProductTypeController extends Controller
             abort(403, 'Acceso denegado');
         }
 
+        // Verificar si hay pedidos asociados a este tipo
+        if ($productType->orders()->exists()) {
+            return redirect()->route('product-types.index')
+                ->with('error', 'No se puede eliminar el tipo de producto porque está asociado a uno o más pedidos.');
+        }
+
         $productType->delete();
 
         // Registrar en bitácora
