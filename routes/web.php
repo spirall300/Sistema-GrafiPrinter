@@ -42,6 +42,7 @@ Route::get('/dashboard', function () {
     $soonDeliveries = $upcomingDeliveriesQuery
         ->whereDate('delivery_date', '>=', now()->toDateString())
         ->whereDate('delivery_date', '<=', now()->addDays(3)->toDateString())
+        ->where('status', '!=', 'Pagado')
         ->orderBy('delivery_date')
         ->select(['id', 'type', 'company_name', 'status', 'delivery_date'])
         ->get();

@@ -35,6 +35,13 @@
                         </h2>
                         <p class="text-slate-500 font-medium mt-1 uppercase text-sm">Actualiza el nombre del tipo</p>
                     </div>
+                    <div class="text-right z-10 hidden md:block">
+                        <p
+                            class="text-4xl font-black uppercase tracking-tighter {{ Auth::user()->role === 'admin' ? 'text-slate-700' : 'text-slate-700' }}">
+                            {{ Auth::user()->role === 'admin' ? 'ADMIN' : 'PUBLIC' }}
+                        </p>
+                        <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
+                    </div>
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
                 </div>
 

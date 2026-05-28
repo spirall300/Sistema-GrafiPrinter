@@ -12,4 +12,10 @@ class ProductType extends Model
     protected $fillable = [
         'name',
     ];
+
+    // Relación con pedidos (orders) por nombre de tipo
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'type', 'name');
+    }
 }

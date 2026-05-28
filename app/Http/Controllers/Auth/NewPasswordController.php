@@ -34,8 +34,34 @@ class NewPasswordController extends Controller
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                'size:16',
+                Rules\Password::min(16)->letters()->numbers()->symbols(),
+            ],
         ]);
+
+        // Si el token es el manual de preguntas de seguridad, procesamos manualmente
+        if ($request->token === 'pregunta-seguridad') {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return back()->withErrors(['email' => 'No se encontró el usuario.']);
+            }
+
+            $user->forceFill([
+                'password' => Hash::make($request->password),
+                'remember_token' => \Illuminate\Support\Str::random(60),
+                'login_attempts' => 0, // Desbloqueamos al usuario si estaba bloqueado
+                'is_blocked' => false,
+            ])->save();
+
+            event(new PasswordReset($user));
+
+            return redirect()->route('login')->with('success', 'Contraseña restablecida con éxito.');
+        }
 
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
