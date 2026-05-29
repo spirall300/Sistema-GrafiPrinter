@@ -2,14 +2,7 @@
     <div class="flex min-h-screen bg-slate-200">
         <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-slate-200 relative">
             <!-- Botón menú solo en móvil -->
-            <button @click="sidebarOpen = true"
-                class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-7 h-7">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
-                        stroke="#fff" />
-                </svg>
-            </button>
+            @include('components.sidebar-hamburger')
             <!-- Sidebar modal en móvil -->
             <template x-if="sidebarOpen">
                 <div class="fixed inset-0 z-50 flex items-center justify-center">
@@ -128,8 +121,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="notes"
-                                        class="block text-sm font-medium text-slate-700">Notas</label>
+                                    <label for="notes" class="block text-sm font-medium text-slate-700">Notas</label>
                                     <textarea id="notes" name="notes" rows="3"
                                         class="mt-1 block w-full rounded-xl border border-slate-300 bg-white py-2 px-3 text-sm text-slate-800 focus:border-blue-500 focus:ring-blue-500">{{ old('notes') }}</textarea>
                                     @error('notes')
