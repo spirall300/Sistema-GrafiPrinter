@@ -45,6 +45,14 @@
                 {{ __('ACCEDER AL SISTEMA') }}
             </x-primary-button>
         </div>
+
+        <!-- Enlace para registrar usuario -->
+        <div class="mt-4 text-center">
+            <a class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors underline"
+                href="{{ route('register') }}">
+                {{ __('¿No tienes cuenta? Regístrate aquí') }}
+            </a>
+        </div>
     </form>
 
     <script>
