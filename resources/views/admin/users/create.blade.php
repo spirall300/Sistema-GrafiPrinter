@@ -1,7 +1,17 @@
 <x-app-layout>
     <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-slate-200 relative">
         <!-- Botón menú solo en móvil -->
+<<<<<<< HEAD
         @include('components.sidebar-hamburger')
+=======
+        <button @click="sidebarOpen = true"
+            class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-7 h-7">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
+                    stroke="#fff" />
+            </svg>
+        </button>
+>>>>>>> 5314ffeff583e2d3e622bc9c89d9f83a96f15f9d
         <!-- Sidebar modal en móvil -->
         <template x-if="sidebarOpen">
             <div class="fixed inset-0 z-50 flex items-center justify-center">
