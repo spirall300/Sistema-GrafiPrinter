@@ -20,14 +20,20 @@ RUN a2enmod rewrite
 # Configura Apache para Laravel
 RUN echo '<VirtualHost *:80>\n\tServerAdmin webmaster@localhost\n\tDocumentRoot /var/www/html/public\n\t<Directory /var/www/html/public>\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>\n</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Copia el código de la app
+# Copia el cï¿½digo de la app
 COPY . /var/www/html
+
+# Establece el directorio de trabajo para que artisan se ejecute en la app
+WORKDIR /var/www/html
+
+# Asegura que el entrypoint sea ejecutable
+RUN chmod +x docker-entrypoint.sh
 
 # Instala Composer y dependencias
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Crea enlace simbólico para storage
+# Crea enlace simbï¿½lico para storage
 RUN php artisan storage:link
 
 # Cambia permisos
@@ -40,5 +46,5 @@ RUN npm install && npm run build
 # Expone puerto 80
 EXPOSE 80
 
-# Comando para ejecutar Apache
-CMD ["apache2-foreground"]
+# Ejecuta el entrypoint que corre migraciones si MIGRATE_ON_START=true
+ENTRYPOINT ["./docker-entrypoint.sh"]

@@ -32,6 +32,15 @@
             @endif
         </div>
 
+        <div class="mt-2 text-center">
+            @if (Route::has('register'))
+                <a class="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors underline"
+                    href="{{ route('register') }}">
+                    {{ __('¿No tienes cuenta? Regístrate') }}
+                </a>
+            @endif
+        </div>
+
 
         <div class="mt-6 flex flex-col items-center gap-4">
             <div class="g-recaptcha" data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"></div>
