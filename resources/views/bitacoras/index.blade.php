@@ -2,28 +2,13 @@
     <div class="flex min-h-screen bg-slate-200">
         <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-slate-200 relative">
             <!-- Botón menú solo en móvil -->
-            <button @click="sidebarOpen = true"
-                class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-7 h-7">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
-                        stroke="#fff" />
-                </svg>
-            </button>
+            @include('components.sidebar-hamburger')
             <!-- Sidebar modal en móvil -->
             <template x-if="sidebarOpen">
                 <div class="fixed inset-0 z-50 flex items-center justify-center">
                     <div @click="sidebarOpen = false" class="absolute inset-0 bg-slate-900/40"></div>
                     <div
                         class="relative w-11/12 max-w-sm bg-slate-900 shadow-2xl rounded-2xl border-2 border-blue-900/30 flex flex-col animate-fade-in mx-auto">
-                        <button @click="sidebarOpen = false"
-                            class="absolute top-4 right-4 text-white text-2xl p-2 rounded-full hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" class="w-7 h-7">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
                         @include('components.sidebar-modal')
                     </div>
                 </div>
@@ -46,7 +31,7 @@
                     <div class="text-right z-10 hidden md:block">
                         <p
                             class="text-4xl font-black uppercase tracking-tighter {{ Auth::user()->role === 'admin' ? 'text-slate-700' : 'text-slate-700' }}">
-                            {{ Auth::user()->role === 'admin' ? 'ADMIN' : 'PUBLIC' }}
+                            {{ Auth::user()->role === 'admin' ? 'ADMINISTRADOR' : (Auth::user()->role === 'encargado' ? 'ENCARGADO' : 'PUBLIC') }}
                         </p>
                         <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
@@ -66,13 +51,13 @@
                                         Usuario</th>
                                     <th
                                         class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                        Rol</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         Acción</th>
                                     <th
                                         class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                        IP</th>
-                                    <th
-                                        class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                        User Agent</th>
+                                        Dispositivo</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-slate-200">
@@ -83,11 +68,11 @@
                                         <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                                             {{ $log->user->name ?? 'Desconocido' }}</td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">
+                                            {{ $log->role_label }}</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">
                                             {{ $log->accion }}</td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">
-                                            {{ $log->ip_address }}</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">
-                                            {{ \Illuminate\Support\Str::limit($log->user_agent, 60) }}</td>
+                                            {{ $log->device_label }}</td>
                                     </tr>
                                 @empty
                                     <tr>

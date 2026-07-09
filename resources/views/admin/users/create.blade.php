@@ -1,17 +1,8 @@
 <x-app-layout>
     <div x-data="{ sidebarOpen: false }" class="flex min-h-screen bg-slate-200 relative">
         <!-- Botón menú solo en móvil -->
-<<<<<<< HEAD
         @include('components.sidebar-hamburger')
-=======
-        <button @click="sidebarOpen = true"
-            class="md:hidden block fixed top-6 left-4 z-50 bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl border-4 border-white focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center transition-all duration-200">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-7 h-7">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M4 7h16M4 12h16M4 17h16"
-                    stroke="#fff" />
-            </svg>
-        </button>
->>>>>>> 5314ffeff583e2d3e622bc9c89d9f83a96f15f9d
+
         <!-- Sidebar modal en móvil -->
         <template x-if="sidebarOpen">
             <div class="fixed inset-0 z-50 flex items-center justify-center">
@@ -36,7 +27,7 @@
                             sistema</p>
                     </div>
                     <div class="text-right z-10 hidden md:block">
-                        <p class="text-4xl font-black text-slate-700 uppercase tracking-tighter">ADMIN</p>
+                        <p class="text-4xl font-black text-slate-700 uppercase tracking-tighter">ADMINISTRADOR</p>
                         <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
@@ -216,7 +207,7 @@
 
                     <div class="flex justify-end">
                         <a href="{{ route('admin.users.index') }}"
-                            class="mr-4 px-4 py-2 bg-slate-300 text-slate-700 rounded-md hover:bg-slate-400">Cancelar</a>
+                            class="mr-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Cancelar</a>
                         <button type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Crear
                             Usuario</button>

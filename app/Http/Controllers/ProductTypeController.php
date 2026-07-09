@@ -6,6 +6,7 @@ use App\Models\Bitacora;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 // Controlador para la gestión de tipos de producto
 class ProductTypeController extends Controller
@@ -29,11 +30,20 @@ class ProductTypeController extends Controller
             abort(403, 'Acceso denegado');
         }
 
+        $name = trim($request->input('name'));
+        $normalizedName = Str::lower($name);
+
+        $existingType = ProductType::whereRaw('LOWER(name) = ?', [$normalizedName])->first();
+
+        if ($existingType) {
+            return redirect()->route('product-types.index')->withInput()->with('error', 'Ya existe un tipo de producto registrado con ese nombre.');
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:product_types,name'],
         ]);
 
-        $type = ProductType::create(['name' => $request->name]);
+        $type = ProductType::create(['name' => $name]);
 
         // Registrar en bitácora
         Bitacora::log("Tipo de producto creado: {$type->name}");
@@ -58,11 +68,22 @@ class ProductTypeController extends Controller
             abort(403, 'Acceso denegado');
         }
 
+        $name = trim($request->input('name'));
+        $normalizedName = Str::lower($name);
+
+        $existingType = ProductType::whereRaw('LOWER(name) = ?', [$normalizedName])
+            ->where('id', '!=', $productType->id)
+            ->first();
+
+        if ($existingType) {
+            return redirect()->route('product-types.index')->withInput()->with('error', 'Ya existe otro tipo de producto registrado con ese nombre.');
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255', "unique:product_types,name,{$productType->id}"],
         ]);
 
-        $productType->update(['name' => $request->name]);
+        $productType->update(['name' => $name]);
 
         // Registrar en bitácora
         Bitacora::log("Tipo de producto actualizado: {$productType->name}");

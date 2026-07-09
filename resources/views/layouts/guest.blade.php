@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -33,8 +34,23 @@
             {{ $slot }}
         </div>
 
-        <footer class="mt-8 text-white text-xs">
-            &copy; {{ date('Y') }} - Universidad Politécnica Territorial Alonso Gamero
+        <footer class="mt-8 flex flex-col items-center text-center text-white/80 text-xs sm:text-sm">
+            <span>&copy; {{ date('Y') }} - Universidad Politécnica Territorial Alonso Gamero</span>
+            <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer"
+                class="mt-2 inline-flex flex-wrap items-center justify-center gap-1 text-[11px] font-medium text-white/90 transition hover:text-white">
+                <span>Este trabajo está licenciado bajo</span>
+                <span class="font-semibold">CC BY-NC-ND 4.0</span>
+                <span class="ml-1 flex items-center gap-1" aria-hidden="true">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt=""
+                        class="h-4 w-4" />
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt=""
+                        class="h-4 w-4" />
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt=""
+                        class="h-4 w-4" />
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt=""
+                        class="h-4 w-4" />
+                </span>
+            </a>
         </footer>
     </div>
 </body>

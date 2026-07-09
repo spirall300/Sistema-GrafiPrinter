@@ -134,44 +134,39 @@
 
                     <div class="flex items-center justify-end gap-4 pt-4">
                         <a href="{{ route('orders.index') }}"
-                            class="text-sm font-semibold text-slate-600 hover:text-blue-600">
+                            class="text-sm font-semibold text-red-600 hover:text-red-700">
                             Cancelar
                         </a>
                         <button type="button" id="confirm-edit-btn"
-                            class="bg-slate-900 hover:bg-blue-900 py-3 px-8 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
+                            class="bg-slate-900 hover:bg-blue-900 py-3 px-8 text-white font-bold rounded-xl shadow-lg transition">
                             Guardar Cambios
                         </button>
                     </div>
                     <!-- Modal de confirmación -->
                     <div id="modal-confirm-edit"
-                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+                        class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-40">
                         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xs w-full flex flex-col items-center">
                             <h3 class="text-lg font-bold text-slate-800 mb-2">¿Confirmar edición?</h3>
                             <p class="text-slate-600 text-sm mb-6 text-center">¿Deseas guardar los cambios realizados
                                 en el pedido?</p>
                             <div class="flex gap-4 w-full justify-center">
-                                <button id="cancel-modal-btn"
-                                    class="px-4 py-2 rounded-lg bg-slate-300 hover:bg-slate-400 text-slate-800 font-semibold flex items-center gap-2">
+                                <button type="button" id="cancel-modal-btn"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 p-3 text-white transition hover:bg-red-700"
+                                    aria-label="Cancelar">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
                                     </svg>
-                                    Cancelar
                                 </button>
-                                <button id="accept-modal-btn"
-                                    class="px-4 py-2 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-bold flex items-center gap-2">
+                                <button type="button" id="accept-modal-btn"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 p-3 text-white transition hover:bg-blue-700"
+                                    aria-label="Confirmar">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7" />
                                     </svg>
-                                    Confirmar
                                 </button>
                             </div>
                         </div>
@@ -194,12 +189,16 @@
 
                         confirmBtn.addEventListener('click', function() {
                             modal.classList.remove('hidden');
+                            modal.classList.add('flex');
                         });
                         cancelModalBtn.addEventListener('click', function() {
                             modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            window.location.href = '{{ route('orders.index') }}';
                         });
                         acceptModalBtn.addEventListener('click', function() {
                             modal.classList.add('hidden');
+                            modal.classList.remove('flex');
                             form.submit();
                         });
 

@@ -44,7 +44,7 @@
                     <div class="text-right z-10 hidden md:block">
                         <p
                             class="text-4xl font-black uppercase tracking-tighter {{ Auth::user()->role === 'admin' ? 'text-slate-700' : 'text-slate-700' }}">
-                            {{ Auth::user()->role === 'admin' ? 'ADMIN' : 'PUBLIC' }}
+                            {{ Auth::user()->role === 'admin' ? 'ADMINISTRADOR' : (Auth::user()->role === 'encargado' ? 'ENCARGADO' : 'PUBLIC') }}
                         </p>
                         <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
@@ -75,7 +75,9 @@
 
                             <div class="flex justify-end">
                                 <button type="submit"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Guardar</button>
+                                    class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                                    Guardar
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -100,37 +102,75 @@
                                             <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                                                 {{ $type->name }}</td>
                                             <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                                                <a href="{{ route('product-types.edit', $type) }}"
-                                                    class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
-                                                <button type="button" @click="openDeleteModal = {{ $type->id }}"
-                                                    class="text-red-600 hover:text-red-900">Eliminar</button>
-                                                <!-- Modal de confirmación -->
-                                                <div x-show="openDeleteModal === {{ $type->id }}" x-cloak
-                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                                                    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full flex flex-col items-center"
-                                                        @click.away="openDeleteModal = null">
-                                                        <h2 class="text-lg font-bold text-slate-800 mb-2">¿Eliminar tipo
-                                                            de producto?</h2>
-                                                        <p class="text-slate-600 mb-6 text-sm">Esta acción no se puede
-                                                            deshacer.</p>
-                                                        <form method="POST"
-                                                            action="{{ route('product-types.destroy', $type) }}"
-                                                            class="w-full flex flex-col items-center gap-3">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold w-full">Sí,
-                                                                eliminar</button>
-                                                            <button type="button" @click="openDeleteModal = null"
-                                                                class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-xl font-semibold w-full">Cancelar</button>
-                                                        </form>
+                                                <div class="flex items-center gap-2">
+                                                    <a href="{{ route('product-types.edit', $type) }}"
+                                                        class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-white transition hover:bg-blue-700"
+                                                        title="Editar tipo" aria-label="Editar tipo">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M16 3a2 2 0 012.828 2.828L8.5 14.5 4 16l1.5-4.5L16 3z" />
+                                                        </svg>
+                                                    </a>
+                                                    <button type="button"
+                                                        @click="openDeleteModal = {{ $type->id }}"
+                                                        class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-red-600 text-white transition hover:bg-red-700"
+                                                        title="Eliminar tipo" aria-label="Eliminar tipo">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" />
+                                                        </svg>
+                                                    </button>
+                                                    <!-- Modal de confirmación -->
+                                                    <div x-show="openDeleteModal === {{ $type->id }}" x-cloak
+                                                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                                                        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full flex flex-col items-center"
+                                                            @click.away="openDeleteModal = null">
+                                                            <h2 class="text-lg font-bold text-slate-800 mb-2">¿Eliminar
+                                                                tipo
+                                                                de producto?</h2>
+                                                            <p class="text-slate-600 mb-6 text-sm">Esta acción no se
+                                                                puede
+                                                                deshacer.</p>
+                                                            <form method="POST"
+                                                                action="{{ route('product-types.destroy', $type) }}"
+                                                                class="w-full flex justify-center gap-4">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="button" @click="openDeleteModal = null"
+                                                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 p-3 text-white transition hover:bg-blue-700"
+                                                                    title="Cancelar">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="h-5 w-5" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M6 18L18 6M6 6l12 12" />
+                                                                    </svg>
+                                                                </button>
+                                                                <button type="submit"
+                                                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 p-3 text-white transition hover:bg-red-700"
+                                                                    title="Eliminar">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="h-5 w-5" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="2" class="px-4 py-4 text-sm text-slate-500">No hay tipos de
+                                            <td colspan="2" class="px-4 py-4 text-sm text-slate-500">No hay tipos
+                                                de
                                                 producto registrados.</td>
                                         </tr>
                                     @endforelse

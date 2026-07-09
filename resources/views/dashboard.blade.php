@@ -10,7 +10,6 @@
                 <!-- Modal centrado, tamaño ajustado -->
                 <div
                     class="relative w-11/12 max-w-sm bg-slate-900 shadow-2xl rounded-2xl border-2 border-blue-900/30 flex flex-col animate-fade-in mx-auto">
-                    <!-- Botón de cerrar (X) eliminado por requerimiento -->
                     @include('components.sidebar-modal')
                 </div>
             </div>
@@ -25,41 +24,27 @@
                         <div
                             class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-blue-50 border-l-4 border-blue-600 rounded-xl p-4 shadow-lg">
                             <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
+                                <div class="flex items-center gap-2">
                                     <span class="text-blue-600 text-2xl">📦</span>
-                                    <span class="font-semibold text-blue-900 text-base">Tienes
-                                        {{ $soonDeliveries->count() }}
-                                        pedido{{ $soonDeliveries->count() > 1 ? 's' : '' }}
-                                        próximo{{ $soonDeliveries->count() > 1 ? 's' : '' }} a entregar</span>
+                                    <span class="font-semibold text-blue-900 text-base">Tienes pedidos próximos a
+                                        entregar</span>
                                 </div>
-                                <ul class="ml-8 mt-1 text-blue-900 text-sm list-disc">
-                                    @foreach ($soonDeliveries as $soon)
-                                        <li>
-                                            <span class="font-semibold">{{ $soon->type }}</span> —
-                                            {{ $soon->company_name }} <span
-                                                class="italic">({{ \Carbon\Carbon::parse($soon->delivery_date)->format('d/m/Y') }})</span>
-                                        </li>
-                                    @endforeach
-                                </ul>
                             </div>
                             <div class="flex flex-col gap-2 items-end">
-                                <a href="{{ route('orders.index') }}"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold text-xs hover:bg-blue-700 transition">Ver
-                                    detalles</a>
+                                <button type="button"
+                                    @click="showSoon = false; $dispatch('open-notifications-modal'); fetch('/dashboard/soon-deliveries-dismiss', { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content, 'Accept': 'application/json', 'Content-Type': 'application/json' }, credentials: 'same-origin' });"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold text-xs hover:bg-blue-700 transition">
+                                    Ver detalles
+                                </button>
                                 <button
-                                    @click="
-                                    showSoon = false;
-                                    fetch('/dashboard/soon-deliveries-dismiss', {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                                            'Accept': 'application/json',
-                                            'Content-Type': 'application/json'
-                                        },
-                                        credentials: 'same-origin'
-                                    });
-                                "
-                                    class="text-blue-700 text-xs underline hover:text-blue-900 mt-1">Cerrar</button>
+                                    @click="showSoon = false; fetch('/dashboard/soon-deliveries-dismiss', { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content, 'Accept': 'application/json', 'Content-Type': 'application/json' }, credentials: 'same-origin' });"
+                                    class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-blue-700 shadow-sm transition hover:bg-blue-100"
+                                    aria-label="Cerrar aviso">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -77,7 +62,7 @@
                         </p>
                     </div>
                     <div class="text-right z-10 hidden md:block">
-                        <p class="text-4xl font-black text-slate-700 uppercase tracking-tighter">DASHBOARD</p>
+                        <p class="text-4xl font-black text-slate-700 uppercase tracking-tighter">MENÚ PRINCIPAL</p>
                         <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
@@ -94,7 +79,13 @@
                                 Seguimiento de Pedidos
                             </h3>
                             <a href="{{ route('orders.index') }}"
-                                class="text-[10px] font-bold text-blue-600 underline">Ver todos</a>
+                                class="inline-flex items-center justify-center rounded-full bg-blue-100 p-2 text-blue-700 transition hover:bg-blue-600 hover:text-white"
+                                title="Ver todos los pedidos">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            </a>
                         </div>
 
                         <div
@@ -160,16 +151,6 @@
                             }
                             $weeks = array_chunk($cells, 7);
 
-                            $currentWeekIndex = 0;
-                            foreach ($weeks as $index => $week) {
-                                foreach ($week as $dayCell) {
-                                    if ($dayCell && $dayCell['isToday']) {
-                                        $currentWeekIndex = $index;
-                                        break 2;
-                                    }
-                                }
-                            }
-
                             $yearOptions = collect(range($calendarDate->year - 1, $calendarDate->year + 1))
                                 ->map(
                                     fn($year) => [
@@ -209,7 +190,7 @@
                         @endphp
 
                         {{-- Datos del calendario y entregas para Alpine --}}
-                        <div x-data='{ weeks: @json($weeks), deliveries: @json($deliveryDays), activeWeek: {{ $currentWeekIndex }}, showModal: false, showMonthPicker: false, monthOptions: @json($monthOptions), yearOptions: @json($yearOptions), selectedYear: "{{ $calendarDate->year }}", currentYear: "{{ $calendarDate->year }}", currentMonthValue: "{{ $calendarDate->format('m') }}", minYear: "{{ $calendarDate->year - 1 }}", maxYear: "{{ $calendarDate->year + 1 }}", dashboardRoute: "{{ route('dashboard') }}", prevMonthUrl: @json(route('dashboard', ['month' => $calendarDate->copy()->subMonth()->format('Y-m')])), nextMonthUrl: @json(route('dashboard', ['month' => $calendarDate->copy()->addMonth()->format('Y-m')])), selectDate(date){ if(!date) return; this.selectedDate = date; this.showModal = true; }, changeYear(delta){ const year = parseInt(this.selectedYear) + delta; if(year < parseInt(this.minYear) || year > parseInt(this.maxYear)) return; this.selectedYear = year.toString(); }, goPrevWeek(){ if(this.activeWeek === 0) { window.location.href = this.prevMonthUrl; } else { this.activeWeek -= 1; } }, goNextWeek(){ if(this.activeWeek === this.weeks.length - 1) { window.location.href = this.nextMonthUrl; } else { this.activeWeek += 1; } } }'
+                        <div x-data='{ weeks: @json($weeks), deliveries: @json($deliveryDays), showModal: false, showMonthPicker: false, monthOptions: @json($monthOptions), yearOptions: @json($yearOptions), selectedYear: "{{ $calendarDate->year }}", currentYear: "{{ $calendarDate->year }}", currentMonthValue: "{{ $calendarDate->format('m') }}", minYear: "{{ $calendarDate->year - 1 }}", maxYear: "{{ $calendarDate->year + 1 }}", dashboardRoute: "{{ route('dashboard') }}", prevMonthUrl: @json(route('dashboard', ['month' => $calendarDate->copy()->subMonth()->format('Y-m')])), nextMonthUrl: @json(route('dashboard', ['month' => $calendarDate->copy()->addMonth()->format('Y-m')])), selectDate(date){ if(!date) return; this.selectedDate = date; this.showModal = true; }, changeYear(delta){ const year = parseInt(this.selectedYear) + delta; if(year < parseInt(this.minYear) || year > parseInt(this.maxYear)) return; this.selectedYear = year.toString(); }, goPrevMonth(){ window.location.href = this.prevMonthUrl; }, goNextMonth(){ window.location.href = this.nextMonthUrl; } }'
                             class="flex flex-col flex-1 justify-between overflow-hidden">
 
                             {{-- Navegación de semanas --}}
@@ -223,7 +204,7 @@
                                     <span class="uppercase">{{ now()->translatedFormat('d M, Y') }}</span>
                                 </a>
                                 <div class="flex items-center gap-2">
-                                    <button type="button" @click="goPrevWeek()"
+                                    <button type="button" @click="goPrevMonth()"
                                         class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition-colors border border-blue-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
@@ -236,8 +217,6 @@
                                             <div class="text-[11px] font-black uppercase tracking-widest text-center">
                                                 {{ $calendarDate->translatedFormat('F Y') }}
                                             </div>
-                                            <div class="text-[9px] uppercase tracking-widest text-blue-100 text-center">
-                                                Semana <span x-text="activeWeek + 1"></span></div>
                                         </button>
                                         <div x-show="showMonthPicker" x-cloak
                                             class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -300,7 +279,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" @click="goNextWeek()"
+                                    <button type="button" @click="goNextMonth()"
                                         class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition-colors border border-blue-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
@@ -311,7 +290,7 @@
                                 </div>
                             </div>
                             <div
-                                class="flex-1 flex flex-col justify-center bg-slate-950/40 rounded-2xl p-2 border border-slate-800/60 shadow-inner overflow-hidden min-h-[180px] max-h-[220px]">
+                                class="flex-1 flex flex-col justify-center bg-slate-950/40 rounded-2xl p-2 border border-slate-800/60 shadow-inner overflow-hidden min-h-[260px] max-h-[320px]">
                                 <div
                                     class="flex flex-row justify-between w-full text-center text-[10px] font-black uppercase tracking-widest text-blue-400 border-b border-slate-800/50 pb-1 mb-2">
                                     <div class="w-[14.28%]">Dom</div>
@@ -323,8 +302,7 @@
                                     <div class="w-[14.28%]">Sáb</div>
                                 </div>
                                 <template x-for="(w, wi) in weeks" :key="wi">
-                                    <div x-show="activeWeek === wi"
-                                        class="flex flex-row justify-between w-full min-h-[32px]">
+                                    <div class="flex flex-row justify-between w-full min-h-[36px] mb-1">
                                         <template x-for="(cell, ci) in w" :key="ci">
                                             <div class="w-[14.28%] flex flex-col items-center px-0.5">
                                                 {{-- Botón del día: hoy azul, día con pedidos verde, días vacíos opacos --}}

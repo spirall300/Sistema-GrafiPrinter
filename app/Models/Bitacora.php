@@ -38,4 +38,24 @@ class Bitacora extends Model
             'user_agent' => Request::userAgent(),
         ]);
     }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return match ($this->user?->role) {
+            'admin' => 'Administrador',
+            'encargado' => 'Encargado',
+            default => 'Usuario',
+        };
+    }
+
+    public function getDeviceLabelAttribute(): string
+    {
+        $agent = strtolower((string) $this->user_agent);
+
+        if (preg_match('/mobile|android|iphone|ipad|ipod|blackberry|opera mini|windows phone/i', $agent)) {
+            return 'Móvil';
+        }
+
+        return 'Escritorio';
+    }
 }

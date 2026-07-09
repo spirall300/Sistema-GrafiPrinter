@@ -75,7 +75,7 @@ class OrderController extends Controller
         $user = Auth::user();
 
         // Filtrar pedidos según el rol del usuario
-        $query = $user->role === 'admin'
+        $query = in_array($user->role, ['admin', 'encargado'])
             ? Order::query()
             : Order::where('user_id', $user->id);
 

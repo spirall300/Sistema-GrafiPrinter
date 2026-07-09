@@ -26,11 +26,16 @@ Route::get('/dashboard', function () {
         }
     }
 
-    // Si es admin, mostrar todos los pedidos; si no, solo los suyos
-    $ordersQuery = $user->role === 'admin' ? Order::query() : Order::where('user_id', $user->id);
-    $upcomingDeliveriesQuery = $user->role === 'admin' ? Order::query() : Order::where('user_id', $user->id);
+    // Si es admin o encargado, mostrar todos los pedidos; si no, solo los suyos
+    $ordersQuery = in_array($user->role, ['admin', 'encargado']) ? Order::query() : Order::where('user_id', $user->id);
+    $upcomingDeliveriesQuery = in_array($user->role, ['admin', 'encargado']) ? Order::query() : Order::where('user_id', $user->id);
 
-    $orders = $ordersQuery->orderBy('delivery_date')->take(5)->get();
+    $orders = $ordersQuery
+        ->whereMonth('delivery_date', $calendarDate->month)
+        ->whereYear('delivery_date', $calendarDate->year)
+        ->orderBy('delivery_date')
+        ->take(8)
+        ->get();
     $upcomingDeliveries = $upcomingDeliveriesQuery
         ->whereMonth('delivery_date', $calendarDate->month)
         ->whereYear('delivery_date', $calendarDate->year)

@@ -1,3 +1,7 @@
+@php
+    $activeNotificationsCount = isset($soonDeliveries) ? $soonDeliveries->count() : 0;
+@endphp
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -33,25 +37,34 @@
 
                     <x-slot name="content">
                         <button type="button"
-                            class="block w-full px-4 py-2 text-start text-sm leading-5 text-blue-700 hover:bg-blue-100 transition"
+                            class="flex w-full items-center justify-between px-4 py-2 text-start text-sm font-semibold leading-5 text-blue-700 hover:bg-slate-100 transition"
                             @click="$dispatch('open-notifications-modal')">
                             <span class="inline-flex items-center gap-2">
-                                <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 inline' fill='none'
-                                    viewBox='0 0 24 24' stroke='currentColor'>
-                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
-                                        d='M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9' />
-                                </svg>
+                                <span class="relative">
+                                    <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 inline' fill='none'
+                                        viewBox='0 0 24 24' stroke='currentColor'>
+                                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                                            d='M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9' />
+                                    </svg>
+                                    @if ($activeNotificationsCount > 0)
+                                        <span
+                                            class="absolute -top-2 -right-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-2 ring-white">
+                                            {{ $activeNotificationsCount }}
+                                        </span>
+                                    @endif
+                                </span>
                                 Notificaciones
                             </span>
                         </button>
-                        <x-dropdown-link href="#" @click.prevent="$dispatch('open-logout-modal')">
+                        <x-dropdown-link href="#" @click.prevent="$dispatch('open-logout-modal')"
+                            class="text-red-600 hover:bg-red-50 hover:text-red-700">
                             <span class="inline-flex items-center gap-2">
                                 <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 inline' fill='none'
                                     viewBox='0 0 24 24' stroke='currentColor'>
                                     <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
                                         d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1' />
                                 </svg>
-                                {{ __('Log Out') }}
+                                Cerrar sesión
                             </span>
                         </x-dropdown-link>
                     </x-slot>
@@ -76,25 +89,69 @@
 
 <div x-data="{ showNotificationsModal: false }" @open-notifications-modal.window="showNotificationsModal = true"
     x-show="showNotificationsModal" style="display: none;"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full flex flex-col items-center"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4">
+    <div class="w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl"
         @click.away="showNotificationsModal = false">
-        <h2 class="text-lg font-bold text-slate-800 mb-2">Notificaciones</h2>
-        <ul class="text-slate-700 text-sm mb-6 w-full list-disc pl-5">
-            @if (isset($soonDeliveries) && $soonDeliveries->count())
-                @foreach ($soonDeliveries as $soon)
-                    <li>
-                        <span class="font-semibold">{{ $soon->type }}</span> —
-                        {{ $soon->company_name }} <span
-                            class="italic">({{ \Carbon\Carbon::parse($soon->delivery_date)->format('d/m/Y') }})</span>
+        <div class="bg-slate-900 px-6 py-5">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-lg font-black uppercase tracking-wider text-blue-400">Notificaciones</h2>
+                    <p class="text-sm text-slate-300">Pedidos pagados próximos a entregar</p>
+                </div>
+            </div>
+        </div>
+        <div class="p-6">
+            <ul class="space-y-3">
+                @if (isset($soonDeliveries) && $soonDeliveries->count())
+                    @foreach ($soonDeliveries as $soon)
+                        <li class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <div
+                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+                                    <circle cx="12" cy="12" r="9" />
+                                </svg>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="text-sm font-semibold text-slate-800">{{ $soon->type }}</p>
+                                    <span
+                                        class="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+                                        Próximo
+                                    </span>
+                                </div>
+                                <p class="mt-1 text-sm text-slate-600">{{ $soon->company_name }}</p>
+                                <p class="mt-1 text-xs text-slate-500">
+                                    Entrega: {{ \Carbon\Carbon::parse($soon->delivery_date)->format('d/m/Y') }}
+                                </p>
+                            </div>
+                        </li>
+                    @endforeach
+                @else
+                    <li
+                        class="flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+                        <div
+                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800">Todo al día</p>
+                            <p class="text-sm text-slate-600">No hay notificaciones nuevas por ahora.</p>
+                        </div>
                     </li>
-                @endforeach
-            @else
-                <li>No hay notificaciones nuevas.</li>
-            @endif
-        </ul>
-        <button type="button" @click="showNotificationsModal = false"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-semibold">Cerrar</button>
+                @endif
+            </ul>
+            <div class="mt-6 flex justify-end">
+                <a href="{{ route('orders.index') }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                    Ver detalles
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -108,10 +165,21 @@
             @csrf
             <div class="flex gap-4 w-full justify-center">
                 <button type="submit"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold">Sí, cerrar
-                    sesión</button>
+                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 p-3 text-white transition hover:bg-red-700"
+                    aria-label="Aceptar cierre de sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                </button>
                 <button type="button" @click="showLogoutModal = false"
-                    class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-xl font-semibold">Cancelar</button>
+                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 p-3 text-white transition hover:bg-blue-700"
+                    aria-label="Cancelar cierre de sesión">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </form>
     </div>

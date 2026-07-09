@@ -10,7 +10,6 @@
                     <div @click="sidebarOpen = false" class="absolute inset-0 bg-slate-900/40"></div>
                     <div
                         class="relative w-11/12 max-w-sm bg-slate-900 shadow-2xl rounded-2xl border-2 border-blue-900/30 flex flex-col animate-fade-in mx-auto">
-                        <!-- Botón de cerrar (X) eliminado por requerimiento -->
                         @include('components.sidebar-modal')
                     </div>
                 </div>
@@ -32,7 +31,7 @@
                     <div class="text-right z-10 hidden md:block">
                         <p
                             class="text-4xl font-black uppercase tracking-tighter {{ Auth::user()->role === 'admin' ? 'text-slate-700' : 'text-slate-700' }}">
-                            {{ Auth::user()->role === 'admin' ? 'ADMIN' : 'PUBLIC' }}
+                            {{ Auth::user()->role === 'admin' ? 'ADMINISTRADOR' : (Auth::user()->role === 'encargado' ? 'ENCARGADO' : 'PUBLIC') }}
                         </p>
                         <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
@@ -146,12 +145,41 @@
 
                     <div class="flex items-center justify-end gap-4 pt-4">
                         <a href="{{ route('dashboard') }}"
-                            class="text-sm font-semibold text-slate-600 hover:text-blue-600">
+                            class="text-sm font-semibold text-red-600 hover:text-red-700">
                             Cancelar
                         </a>
-                        <x-primary-button class="bg-blue-700 hover:bg-blue-800 py-3 px-8">
+                        <button type="button" id="confirm-create-btn"
+                            class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-8 py-3 text-white font-bold shadow-lg transition hover:bg-blue-900">
                             Guardar Pedido
-                        </x-primary-button>
+                        </button>
+                    </div>
+
+                    <div id="modal-confirm-create"
+                        class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-40">
+                        <div class="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
+                            <h2 class="mb-2 text-lg font-bold text-slate-800">¿Confirmar creación?</h2>
+                            <p class="mb-6 text-sm text-slate-600">¿Deseas guardar este nuevo pedido?</p>
+                            <div class="flex justify-center gap-4">
+                                <button type="button" id="cancel-modal-btn"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 p-3 text-white transition hover:bg-red-700"
+                                    aria-label="Cancelar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <button type="button" id="accept-modal-btn"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 p-3 text-white transition hover:bg-blue-700"
+                                    aria-label="Confirmar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
 
@@ -160,10 +188,41 @@
                         const form = document.getElementById('order-form');
                         const fileInput = document.getElementById('file');
                         const maxFileSize = 10 * 1024 * 1024; // 10MB
+                        const confirmBtn = document.getElementById('confirm-create-btn');
+                        const modal = document.getElementById('modal-confirm-create');
+                        const cancelModalBtn = document.getElementById('cancel-modal-btn');
+                        const acceptModalBtn = document.getElementById('accept-modal-btn');
 
-                        if (!form || !fileInput) {
+                        if (!form || !fileInput || !confirmBtn || !modal) {
                             return;
                         }
+
+                        confirmBtn.addEventListener('click', function() {
+                            if (!form.checkValidity()) {
+                                form.reportValidity();
+                                return;
+                            }
+
+                            const file = fileInput.files[0];
+                            if (file && file.size > maxFileSize) {
+                                alert('El archivo es demasiado grande. El tamaño máximo permitido es 10MB.');
+                                return;
+                            }
+
+                            modal.classList.remove('hidden');
+                            modal.classList.add('flex');
+                        });
+
+                        cancelModalBtn.addEventListener('click', function() {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                        });
+
+                        acceptModalBtn.addEventListener('click', function() {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                            form.submit();
+                        });
 
                         form.addEventListener('submit', function(event) {
                             const file = fileInput.files[0];

@@ -30,16 +30,15 @@
                             {{ $user->name }}</p>
                     </div>
                     <div class="text-right z-10 hidden md:block">
-                        <p class="text-4xl font-black text-slate-700 uppercase tracking-tighter">ADMIN</p>
+                        <p class="text-4xl font-black text-slate-700 uppercase tracking-tighter">ADMINISTRADOR</p>
                         <p class="text-xs font-mono text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-50 rounded-full opacity-50"></div>
                 </div>
 
                 {{-- Formulario de edición de usuario con confirmación antes de actualizar --}}
-                <form method="POST" action="{{ route('admin.users.update', $user) }}"
-                    class="bg-white rounded-3xl shadow-lg p-8 border border-slate-100" x-data="passwordStrength()"
-                    onsubmit="return confirm('¿Estás seguro de los cambios realizados en este usuario?');">
+                <form id="user-form" method="POST" action="{{ route('admin.users.update', $user) }}"
+                    class="bg-white rounded-3xl shadow-lg p-8 border border-slate-100" x-data="passwordStrength()">
                     @csrf
                     @method('PATCH')
 
@@ -209,15 +208,74 @@
 
                     <div class="flex justify-end">
                         <a href="{{ route('admin.users.index') }}"
-                            class="mr-4 px-4 py-2 bg-slate-300 text-slate-700 rounded-md hover:bg-slate-400">Cancelar</a>
-                        <button type="submit"
+                            class="mr-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Cancelar</a>
+                        <button type="button" id="confirm-update-btn"
                             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Actualizar
                             Usuario</button>
+                    </div>
+
+                    <div id="modal-confirm-update"
+                        class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-40">
+                        <div class="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
+                            <h2 class="mb-2 text-lg font-bold text-slate-800">¿Confirmar actualización?</h2>
+                            <p class="mb-6 text-sm text-slate-600">¿Deseas guardar los cambios realizados en este
+                                usuario?</p>
+                            <div class="flex justify-center gap-4">
+                                <button type="button" id="cancel-modal-btn"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 p-3 text-white transition hover:bg-red-700"
+                                    aria-label="Cancelar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <button type="button" id="accept-modal-btn"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 p-3 text-white transition hover:bg-blue-700"
+                                    aria-label="Confirmar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('user-form');
+            const confirmBtn = document.getElementById('confirm-update-btn');
+            const modal = document.getElementById('modal-confirm-update');
+            const cancelModalBtn = document.getElementById('cancel-modal-btn');
+            const acceptModalBtn = document.getElementById('accept-modal-btn');
+
+            if (!form || !confirmBtn || !modal) {
+                return;
+            }
+
+            confirmBtn.addEventListener('click', function() {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+
+            cancelModalBtn.addEventListener('click', function() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            });
+
+            acceptModalBtn.addEventListener('click', function() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                form.submit();
+            });
+        });
+    </script>
 
     <script>
         // Oculta la URL cambiando a la raíz

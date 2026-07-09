@@ -37,9 +37,6 @@
 
         @if (in_array(Auth::user()->role, ['admin', 'encargado']))
             <div class="pt-6">
-                <p class="px-4 text-[10px] font-black text-blue-500 uppercase mb-2 tracking-widest">
-                    Configuración Avanzada</p>
-
                 <div>
                     <button
                         class="flex items-center justify-between w-full p-4 text-sm font-black text-white bg-blue-600 rounded-xl transition-all duration-300 group shadow-lg">
@@ -56,11 +53,11 @@
                         </a> --}}
                         @if (Auth::user()->role == 'admin')
                             <a href="{{ route('bitacoras.index') }}"
-                                class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">
+                                class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 transition hover:translate-x-1">
                                 • Bitácora
                             </a>
                             <a href="{{ route('admin.users.index') }}"
-                                class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 italic transition hover:translate-x-1">
+                                class="block p-2 text-sm font-bold text-white !important hover:text-blue-400 pl-4 transition hover:translate-x-1">
                                 • Gestionar Usuarios
                             </a>
                         @endif
@@ -69,4 +66,22 @@
             </div>
         @endif
     </nav>
+
+    <div class="mt-6 border-t border-white/10 px-4 pt-4 pb-6">
+        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer"
+            class="flex flex-wrap items-center justify-center gap-1 text-[10px] leading-4 text-slate-300 transition hover:text-white">
+            <span>Este trabajo está licenciado bajo</span>
+            <span class="font-semibold text-slate-100">CC BY-NC-ND 4.0</span>
+            <span class="flex items-center gap-1" aria-hidden="true">
+                <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt=""
+                    class="h-3.5 w-3.5" />
+                <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt=""
+                    class="h-3.5 w-3.5" />
+                <img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt=""
+                    class="h-3.5 w-3.5" />
+                <img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt=""
+                    class="h-3.5 w-3.5" />
+            </span>
+        </a>
+    </div>
 </aside>
